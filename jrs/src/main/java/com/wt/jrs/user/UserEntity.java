@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_role", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "users")
 public class UserEntity implements Serializable {
 
@@ -33,26 +35,26 @@ public class UserEntity implements Serializable {
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRole role;
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false)
+//    private UserRole role;
 
 
-    @OneToMany(mappedBy = "user")
-    @OrderBy("createdAt DESC")
-    private Set<JobEntity> jobs = new LinkedHashSet<>();
+//    @OneToMany(mappedBy = "user")
+//    @OrderBy("createdAt DESC")
+//    private Set<JobEntity> jobs = new LinkedHashSet<>();
 
     public UserEntity() {
     }
 
-    public UserEntity(String firstName, String lastName, String email, String phoneNumber, PreferredContactMethod contactMethod, String password, UserRole role) {
+    public UserEntity(String firstName, String lastName, String email, String phoneNumber, PreferredContactMethod contactMethod,
+                      String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.contactMethod = contactMethod;
         this.password = password;
-        this.role = role;
     }
 
     public Long getId() {
@@ -95,26 +97,6 @@ public class UserEntity implements Serializable {
         this.password = password;
     }
 
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-
-    public void addJob(JobEntity job){
-        this.jobs.add(job);
-    }
-
-    public Set<JobEntity> getJobs() {
-        return jobs;
-    }
-
-    public void setJobs(Set<JobEntity> jobs) {
-        this.jobs = jobs;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -131,31 +113,4 @@ public class UserEntity implements Serializable {
         this.contactMethod = contactMethod;
     }
 
-    @Override
-    public String toString() {
-        return "UserEntity{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", contactMethod=" + contactMethod +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", jobs=" + jobs +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserEntity)) return false;
-        UserEntity that = (UserEntity) o;
-        return getId().equals(that.getId()) && getFirstName().equals(that.getFirstName()) && getLastName().equals(that.getLastName()) && getEmail().equals(that.getEmail()) && getPassword().equals(that.getPassword()) && getRole() == that.getRole();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getFirstName(), getLastName(), getEmail(), getPassword(), getRole());
-    }
 }

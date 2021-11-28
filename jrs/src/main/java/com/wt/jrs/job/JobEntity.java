@@ -30,7 +30,7 @@ public class JobEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="text")
     private String description;
 
     private Integer salary;
