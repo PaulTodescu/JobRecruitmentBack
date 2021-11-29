@@ -2,6 +2,7 @@ package com.wt.jrs.job;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wt.jrs.category.CategoryEntity;
+import com.wt.jrs.user.RecruiterEntity;
 import com.wt.jrs.user.UserEntity;
 import org.springframework.lang.Nullable;
 
@@ -27,8 +28,8 @@ public class JobEntity {
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @JoinColumn(name = "recruiter_id")
+    private RecruiterEntity recruiter;
 
     @Column(nullable = false, columnDefinition="text")
     private String description;
@@ -149,11 +150,11 @@ public class JobEntity {
         this.location = location;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public RecruiterEntity getRecruiter() {
+        return recruiter;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setRecruiter(RecruiterEntity recruiter) {
+        this.recruiter = recruiter;
     }
 }

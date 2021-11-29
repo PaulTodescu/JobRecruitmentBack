@@ -78,4 +78,17 @@ public class UserDTO {
     public void setContactMethod(PreferredContactMethod contactMethod) {
         this.contactMethod = contactMethod;
     }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", contactMethod=" + contactMethod +
+                ", role=" + role +
+                '}';
+    }
 }

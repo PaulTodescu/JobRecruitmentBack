@@ -13,16 +13,23 @@ import java.util.Set;
 @DiscriminatorValue(value = "RECRUITER")
 public class RecruiterEntity extends UserEntity{
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "recruiter")
     @OrderBy("createdAt DESC")
     private Set<JobEntity> jobs = new LinkedHashSet<>();
 
     public RecruiterEntity(){}
 
     public RecruiterEntity(String firstName, String lastName, String email, String phoneNumber,
-                           PreferredContactMethod contactMethod, String password,
-                           Set<JobEntity> jobs) {
-        super(firstName, lastName, email, phoneNumber, contactMethod, password);
+                           PreferredContactMethod contactMethod, String password, UserRole role) {
+        super(firstName, lastName, email, phoneNumber, contactMethod, password, role);
+        this.jobs = null;
+    }
+
+    public Set<JobEntity> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(Set<JobEntity> jobs) {
         this.jobs = jobs;
     }
 }

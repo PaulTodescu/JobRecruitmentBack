@@ -35,10 +35,9 @@ public class UserEntity implements Serializable {
     @Column(nullable = false)
     private String password;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
-//    private UserRole role;
-
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
 
 //    @OneToMany(mappedBy = "user")
 //    @OrderBy("createdAt DESC")
@@ -48,13 +47,14 @@ public class UserEntity implements Serializable {
     }
 
     public UserEntity(String firstName, String lastName, String email, String phoneNumber, PreferredContactMethod contactMethod,
-                      String password) {
+                      String password, UserRole role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.contactMethod = contactMethod;
         this.password = password;
+        this.role = role;
     }
 
     public Long getId() {
@@ -113,4 +113,11 @@ public class UserEntity implements Serializable {
         this.contactMethod = contactMethod;
     }
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 }

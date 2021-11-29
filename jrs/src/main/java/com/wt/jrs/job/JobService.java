@@ -2,15 +2,25 @@ package com.wt.jrs.job;
 
 import com.wt.jrs.category.CategoryEntity;
 import com.wt.jrs.category.CategoryService;
+import com.wt.jrs.user.RecruiterEntity;
 import com.wt.jrs.user.UserEntity;
 import com.wt.jrs.user.UserService;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,8 +63,10 @@ public class JobService {
         JobEntity job = this.findJobById(jobId);
         String currentUserEmail = userService.findLoggedInUserEmail();
         UserEntity currentUser = userService.findUserByEmail(currentUserEmail);
-        job.setUser(currentUser);
-        this.jobDAO.save(job);
+        if (currentUser instanceof RecruiterEntity) {
+            job.setRecruiter((RecruiterEntity) currentUser);
+            this.jobDAO.save(job);
+        } else throw new RuntimeException("Employees are not allowed to add jobs");
     }
 
     public JobDTO mapJobToDTO(JobEntity job){

@@ -2,11 +2,14 @@ package com.wt.jrs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import javax.servlet.MultipartConfigElement;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -16,6 +19,15 @@ public class JrsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JrsApplication.class, args);
 	}
+
+
+//	@Bean
+//	MultipartConfigElement multipartConfigElement() {
+//		MultipartConfigFactory factory = new MultipartConfigFactory();
+//		factory.setMaxFileSize(DataSize.ofKilobytes(512));
+//		factory.setMaxRequestSize(DataSize.ofKilobytes(512));
+//		return factory.createMultipartConfig();
+//	}
 
 	@Bean
 	public CorsFilter corsFilter() {

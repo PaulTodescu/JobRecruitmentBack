@@ -1,5 +1,6 @@
 package com.wt.jrs.category;
 
+import com.wt.jrs.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -8,10 +9,12 @@ import org.springframework.stereotype.Component;
 public class CategoryData implements CommandLineRunner {
 
     private final CategoryDAO categoryDAO;
+    private final UserDAO userDAO;
 
     @Autowired
-    public CategoryData(CategoryDAO categoryDAO) {
+    public CategoryData(CategoryDAO categoryDAO, UserDAO userDAO) {
         this.categoryDAO = categoryDAO;
+        this.userDAO = userDAO;
     }
 
     @Override

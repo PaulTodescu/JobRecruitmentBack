@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<UserEntity> adduser(@RequestBody UserEntity user){
+    public ResponseEntity<UserEntity> adduser(@RequestBody UserEntity user) throws InvocationTargetException, IllegalAccessException {
         userService.addUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -64,6 +65,7 @@ public class UserController {
     @GetMapping(path = "/info")
     public ResponseEntity<UserDTO> getLoggedInUser(){
         UserDTO user = this.userService.findLoggedInUser();
+        System.out.println(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

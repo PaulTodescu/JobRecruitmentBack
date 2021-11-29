@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.beanutils.BeanUtils;
 
 @Service
 @Transactional
@@ -24,13 +26,22 @@ public class UserService {
         this.userDAO = userDAO;
     }
 
-    public void addUser(UserEntity user){
+    public void addUser(UserEntity user) throws InvocationTargetException, IllegalAccessException {
 
         Optional<UserEntity> userOptional = userDAO.findUserEntityByEmail(user.getEmail());
         if (userOptional.isPresent()){
             throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists");
         }
-        userDAO.save(user);
+        if (user.getRole() == UserRole.RECRUITER){
+            UserEntity recruiter = new RecruiterEntity();
+            BeanUtils.copyProperties(recruiter, user);
+            userDAO.save(recruiter);
+
+        } else  if (user.getRole() == UserRole.EMPLOYEE){
+            UserEntity employee = new EmployeeEntity();
+            BeanUtils.copyProperties(employee,user);
+            userDAO.save(employee);
+        }
     }
 
     public UserEntity findUserById(Long id){
@@ -83,7 +94,12 @@ public class UserService {
     public List<JobEntity> findAllJobsForCurrentUser() {
         String currentUserEmail = this.findLoggedInUserEmail();
         UserEntity currentUser = this.findUserByEmail(currentUserEmail);
-        return new ArrayList<>(currentUser.getJobs());
+        if (currentUser instanceof RecruiterEntity){
+            RecruiterEntity recruiter = (RecruiterEntity) currentUser;
+            return new ArrayList<>(recruiter.getJobs());
+        } else {
+            throw new RuntimeException("Employees do not have access to recruiter jobs");
+        }
     }
 
     public UserDTO findLoggedInUser() {
@@ -97,9 +113,9 @@ public class UserService {
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setEmail(user.getEmail());
-        userDTO.setRole(user.getRole());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setContactMethod(user.getContactMethod());
+        userDTO.setRole(user.getRole());
         return userDTO;
     }
 
@@ -120,12 +136,6 @@ public class UserService {
         }
         if (updatedFirstName != null && !(updatedFirstName.equals(loggedInUser.getFirstName()))){
             loggedInUser.setFirstName(updatedFirstName);
-        }
-        if (updatedUserRole != null && !(updatedUserRole.equals(loggedInUser.getRole()))){
-            loggedInUser.setRole(updatedUserRole);
-        }
-        if (updatedUserRole != null && !(updatedUserRole.equals(loggedInUser.getRole()))){
-            loggedInUser.setRole(updatedUserRole);
         }
         if (updatedUserPhone != null && !(updatedUserPhone.equals(loggedInUser.getPhoneNumber()))){
             loggedInUser.setPhoneNumber(updatedUserPhone);
