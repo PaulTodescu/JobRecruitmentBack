@@ -2,6 +2,7 @@ package com.wt.jrs.category;
 
 import com.wt.jrs.job.JobDTO;
 import com.wt.jrs.job.JobService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class CategoryService {
     private final CategoryDAO categoryDAO;
     private final JobService jobService;
 
+    @Autowired
     public CategoryService(CategoryDAO categoryDAO, JobService jobService) {
         this.categoryDAO = categoryDAO;
         this.jobService = jobService;

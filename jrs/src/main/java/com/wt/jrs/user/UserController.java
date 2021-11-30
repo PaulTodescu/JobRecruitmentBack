@@ -75,4 +75,22 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(path = "/role")
+    public ResponseEntity<String> getLoggedInUserRole(){
+        UserRole role =  userService.findLoggedInUserRole();
+        return new ResponseEntity<>(role.toString(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/role/recruiter")
+    public ResponseEntity<Boolean> checkIfLoggedInUserIsRecruiter(){
+        Boolean isRecruiter = userService.checkIfLoggedInUserIsRecruiter();
+        return new ResponseEntity<Boolean>(isRecruiter, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/role/employee")
+    public ResponseEntity<Boolean> checkIfLoggedInUserIsEmployee(){
+        Boolean isEmployee = userService.checkIfLoggedInUserIsEmployee();
+        return new ResponseEntity<Boolean>(isEmployee, HttpStatus.OK);
+    }
+
 }

@@ -1,7 +1,5 @@
 package com.wt.jrs.job;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,26 +7,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(path = "/job")
 public class JobController {
 
     private final JobService jobService;
+    private final FileService fileService;
 
     @Autowired
-    ServletContext context;
+    public JobController(JobService jobService, FileService fileService) {
 
-    @Autowired
-    FileService fileService;
-
-    public JobController(JobService jobService) {
         this.jobService = jobService;
+        this.fileService = fileService;
     }
 
     @PostMapping
@@ -73,28 +67,30 @@ public class JobController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(path = "{jobId}/image")
+    @PostMapping(path = "/{jobId}/image")
     public ResponseEntity<?> assignImageToJob(
             @PathVariable("jobId") Long jobId,
-            @RequestParam(value = "image") MultipartFile image) throws IOException {
+            @RequestParam(value = "image") Optional<MultipartFile> image) throws IOException {
 
-        this.fileService.uploadFile(image, jobId);
-
-//        boolean folderIsCreated = new File(context.getRealPath("/images/")).exists();
-//        if (!folderIsCreated){
-//            boolean created = new File(context.getRealPath("/images/")).mkdir();
-//        }
-////        String fileName = image.getOriginalFilename();
-////        String modifiedFileName = FilenameUtils.getBaseName(fileName) + "_" + System.currentTimeMillis() + "_" +
-////                FilenameUtils.getExtension(fileName);
-////        File serverFile = new File(context.getRealPath("/images/" + File.separator + modifiedFileName));
-//        File serverFile = new File(context.getRealPath("/images/"));
-//        try {
-//            FileUtils.writeByteArrayToFile(serverFile, image.getBytes());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
+        this.fileService.uploadImage(image, jobId);
         return new ResponseEntity<>(HttpStatus.OK);
-        }
+    }
+
+    @GetMapping(path = "{jobId}/image")
+    @CrossOrigin
+    public ResponseEntity<String> getJobImage(@PathVariable("jobId") Long jobId){
+        String image = this.fileService.getJobImage(jobId);
+        return new ResponseEntity<>(image, HttpStatus.OK);
+    }
+
+
+    @GetMapping (path = "/{jobId}/image/name")
+    @ResponseBody
+    public String getJobImageName(@PathVariable("jobId") Long jobId){
+        return fileService.getImageName(jobId);
+    }
+
+
+
+
 }

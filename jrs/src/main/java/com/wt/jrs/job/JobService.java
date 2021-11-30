@@ -5,22 +5,13 @@ import com.wt.jrs.category.CategoryService;
 import com.wt.jrs.user.RecruiterEntity;
 import com.wt.jrs.user.UserEntity;
 import com.wt.jrs.user.UserService;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import javax.transaction.Transactional;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,11 +21,14 @@ public class JobService {
     private final JobDAO jobDAO;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final FileService fileService;
 
-    public JobService(JobDAO jobDAO, UserService userService, @Lazy CategoryService categoryService) {
+    @Autowired
+    public JobService(JobDAO jobDAO, UserService userService, @Lazy CategoryService categoryService, FileService fileService) {
         this.jobDAO = jobDAO;
         this.userService = userService;
         this.categoryService = categoryService;
+        this.fileService = fileService;
     }
 
     public Long addJob(JobEntity job) {
@@ -158,6 +152,7 @@ public class JobService {
     public void deleteJob(Long jobId) {
         if (this.jobDAO.existsById(jobId)) {
             this.jobDAO.deleteJobEntityById(jobId);
+            this.fileService.deleteImage(jobId);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Job with id: " + jobId + " was not found!");
         }

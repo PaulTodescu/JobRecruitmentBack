@@ -107,6 +107,24 @@ public class UserService {
         return this.mapUserToDTO(this.findUserByEmail(email));
     }
 
+    public UserRole findLoggedInUserRole() {
+        String currentUserEmail = this.findLoggedInUserEmail();
+        UserEntity currentUser = this.findUserByEmail(currentUserEmail);
+        return currentUser.getRole();
+    }
+
+    public Boolean checkIfLoggedInUserIsRecruiter() {
+        String currentUserEmail = this.findLoggedInUserEmail();
+        UserEntity currentUser = this.findUserByEmail(currentUserEmail);
+        return currentUser.getRole() == UserRole.RECRUITER;
+    }
+
+    public Boolean checkIfLoggedInUserIsEmployee() {
+        String currentUserEmail = this.findLoggedInUserEmail();
+        UserEntity currentUser = this.findUserByEmail(currentUserEmail);
+        return currentUser.getRole() == UserRole.EMPLOYEE;
+    }
+
     public UserDTO mapUserToDTO(UserEntity user){
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
