@@ -1,5 +1,7 @@
 package com.wt.jrs.user;
 
+import com.wt.jrs.application.ApplicationDTO;
+import com.wt.jrs.application.ApplicationEntity;
 import com.wt.jrs.job.JobEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -91,6 +93,12 @@ public class UserController {
     public ResponseEntity<Boolean> checkIfLoggedInUserIsEmployee(){
         Boolean isEmployee = userService.checkIfLoggedInUserIsEmployee();
         return new ResponseEntity<Boolean>(isEmployee, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/employee/applications")
+    public ResponseEntity<List<ApplicationDTO>> getEmployeeApplications(){
+        List<ApplicationDTO> applications = this.userService.getEmployeeApplications();
+        return new ResponseEntity<>(applications, HttpStatus.OK);
     }
 
 }

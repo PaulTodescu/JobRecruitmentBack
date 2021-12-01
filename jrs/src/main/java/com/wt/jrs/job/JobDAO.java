@@ -15,8 +15,10 @@ public interface JobDAO extends JpaRepository<JobEntity, Long> {
 
     Optional<JobEntity> findJobByTitle(String title);
 
-    @Modifying
-    @Query("DELETE FROM JobEntity jb WHERE jb.id = :jobId")
-    void deleteJobEntityById(@Param("jobId") Long jobId);
+//    @Modifying
+//    @Query("DELETE FROM JobEntity jb WHERE jb.id = :jobId")
+//    void deleteJobEntityById(@Param("jobId") Long jobId);
+
+    void deleteJobEntityById(Long jobId);
 
 }

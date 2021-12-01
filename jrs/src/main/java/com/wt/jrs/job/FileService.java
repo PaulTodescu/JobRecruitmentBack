@@ -22,6 +22,7 @@ public class FileService {
     ServletContext context;
 
     public String IMAGE_RESOURCE_PATH = "/images/jobId";
+    public String CV_IMAGE_RESOURCE_PATH = "/cv_s/userId";
     MultipartFile image;
 
     public void uploadImage(Optional<MultipartFile> imageOptional, Long jobId) throws IOException {

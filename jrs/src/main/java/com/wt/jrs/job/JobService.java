@@ -1,5 +1,6 @@
 package com.wt.jrs.job;
 
+import com.wt.jrs.application.ApplicationDAO;
 import com.wt.jrs.category.CategoryEntity;
 import com.wt.jrs.category.CategoryService;
 import com.wt.jrs.user.RecruiterEntity;
@@ -19,13 +20,15 @@ import java.util.stream.Collectors;
 public class JobService {
 
     private final JobDAO jobDAO;
+    private final ApplicationDAO applicationDAO;
     private final UserService userService;
     private final CategoryService categoryService;
     private final FileService fileService;
 
     @Autowired
-    public JobService(JobDAO jobDAO, UserService userService, @Lazy CategoryService categoryService, FileService fileService) {
+    public JobService(JobDAO jobDAO, ApplicationDAO applicationDAO, UserService userService, @Lazy CategoryService categoryService, FileService fileService) {
         this.jobDAO = jobDAO;
+        this.applicationDAO = applicationDAO;
         this.userService = userService;
         this.categoryService = categoryService;
         this.fileService = fileService;

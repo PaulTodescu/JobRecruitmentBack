@@ -2,6 +2,7 @@ package com.wt.jrs.job;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,8 @@ public class JobController {
         this.fileService = fileService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addJob(@RequestBody JobEntity job){
         Long jobId = this.jobService.addJob(job);
         this.jobService.assignCurrentUserToJob(jobId);
@@ -59,7 +61,7 @@ public class JobController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(path = "{jobId}/category/{categoryId}")
+    @PutMapping(path = "/{jobId}/category/{categoryId}")
     public ResponseEntity<?> assignJobToCategory(
             @PathVariable("jobId") Long jobId,
             @PathVariable("categoryId") Long categoryId){
@@ -76,7 +78,7 @@ public class JobController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(path = "{jobId}/image")
+    @GetMapping(path = "/{jobId}/image")
     @CrossOrigin
     public ResponseEntity<String> getJobImage(@PathVariable("jobId") Long jobId){
         String image = this.fileService.getJobImage(jobId);
