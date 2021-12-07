@@ -1,7 +1,11 @@
 package com.wt.jrs.user;
 
+import com.wt.jrs.application.ApplicationDTO;
+import com.wt.jrs.application.ApplicationEntity;
+import com.wt.jrs.application.ApplicationService;
 import com.wt.jrs.job.JobEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.apache.commons.beanutils.BeanUtils;
 
 @Service
@@ -20,10 +25,12 @@ import org.apache.commons.beanutils.BeanUtils;
 public class UserService {
 
     private final UserDAO userDAO;
+    private final ApplicationService applicationService;
 
     @Autowired
-    public UserService(UserDAO userDAO) {
+    public UserService(UserDAO userDAO, @Lazy ApplicationService applicationService) {
         this.userDAO = userDAO;
+        this.applicationService = applicationService;
     }
 
     public void addUser(UserEntity user) throws InvocationTargetException, IllegalAccessException {
@@ -31,6 +38,10 @@ public class UserService {
         Optional<UserEntity> userOptional = userDAO.findUserEntityByEmail(user.getEmail());
         if (userOptional.isPresent()){
             throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists");
+        }
+        // phone number is not set during registration, so set contact method to email
+        if (user.getPhoneNumber() == null){
+            user.setContactMethod(PreferredContactMethod.EMAIL);
         }
         if (user.getRole() == UserRole.RECRUITER){
             UserEntity recruiter = new RecruiterEntity();
@@ -49,6 +60,17 @@ public class UserService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "User with id: " + id + " was not found")
         );
+    }
+
+    public EmployeeEntity findEmployeeById(Long id){
+        UserEntity user = userDAO.findUserEntityById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "User with id: " + id + " was not found")
+        );
+        if (user instanceof EmployeeEntity){
+            return (EmployeeEntity) user;
+        }
+        throw new RuntimeException("User with id: " + id + " is not an employee");
     }
 
     public UserEntity findUserByEmail(String email){
@@ -160,6 +182,19 @@ public class UserService {
         }
         if (updatedContactMethod != null && !(updatedContactMethod.equals(loggedInUser.getContactMethod()))){
             loggedInUser.setContactMethod(updatedContactMethod);
+        } else if (updatedContactMethod == null){
+            loggedInUser.setContactMethod(PreferredContactMethod.EMAIL);
+        }
+    }
+
+    public List<ApplicationDTO> getEmployeeApplications(){
+        String currentUserEmail = this.findLoggedInUserEmail();
+        UserEntity currentUser = this.findUserByEmail(currentUserEmail);
+        if (currentUser instanceof EmployeeEntity){
+            EmployeeEntity employee = (EmployeeEntity) currentUser;
+            return new ArrayList<>(this.applicationService.mapApplicationsToDTOs(List.copyOf(employee.getApplications())));
+        }else {
+            throw new RuntimeException("Applications can be accessed by employees only");
         }
     }
 }

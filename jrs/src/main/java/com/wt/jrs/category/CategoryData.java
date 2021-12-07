@@ -9,12 +9,10 @@ import org.springframework.stereotype.Component;
 public class CategoryData implements CommandLineRunner {
 
     private final CategoryDAO categoryDAO;
-    private final UserDAO userDAO;
 
     @Autowired
-    public CategoryData(CategoryDAO categoryDAO, UserDAO userDAO) {
+    public CategoryData(CategoryDAO categoryDAO) {
         this.categoryDAO = categoryDAO;
-        this.userDAO = userDAO;
     }
 
     @Override

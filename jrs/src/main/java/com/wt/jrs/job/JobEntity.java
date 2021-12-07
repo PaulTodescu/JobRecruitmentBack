@@ -1,16 +1,26 @@
 package com.wt.jrs.job;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.wt.jrs.application.ApplicationEntity;
 import com.wt.jrs.category.CategoryEntity;
+import com.wt.jrs.comment.CommentEntity;
 import com.wt.jrs.user.RecruiterEntity;
 import com.wt.jrs.user.UserEntity;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"applications", "comments"})
 @Table(name = "job")
 public class JobEntity {
 
@@ -22,12 +32,12 @@ public class JobEntity {
     private String title;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @ManyToOne()
+    @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "recruiter_id")
     private RecruiterEntity recruiter;
 
@@ -50,6 +60,16 @@ public class JobEntity {
 
     @Column(nullable = false)
     private String location;
+
+    @JsonBackReference(value = "reference1")
+    @OrderBy("createdAt DESC")
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+    private Set<ApplicationEntity> applications = new HashSet<>();
+
+    @JsonBackReference(value = "reference2")
+    @OrderBy("createdAt DESC")
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+    private Set<CommentEntity> comments = new HashSet<>();
 
     public JobEntity() {
     }
@@ -156,5 +176,25 @@ public class JobEntity {
 
     public void setRecruiter(RecruiterEntity recruiter) {
         this.recruiter = recruiter;
+    }
+
+    public CategoryEntity getCategory() {
+        return category;
+    }
+
+    public Set<ApplicationEntity> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(Set<ApplicationEntity> applications) {
+        this.applications = applications;
+    }
+
+    public Set<CommentEntity> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<CommentEntity> comments) {
+        this.comments = comments;
     }
 }

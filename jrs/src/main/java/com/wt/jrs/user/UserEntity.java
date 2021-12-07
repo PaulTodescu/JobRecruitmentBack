@@ -39,10 +39,6 @@ public class UserEntity implements Serializable {
     @Column(nullable = false)
     private UserRole role;
 
-//    @OneToMany(mappedBy = "user")
-//    @OrderBy("createdAt DESC")
-//    private Set<JobEntity> jobs = new LinkedHashSet<>();
-
     public UserEntity() {
     }
 
