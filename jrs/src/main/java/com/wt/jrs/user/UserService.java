@@ -1,7 +1,6 @@
 package com.wt.jrs.user;
 
 import com.wt.jrs.application.ApplicationDTO;
-import com.wt.jrs.application.ApplicationEntity;
 import com.wt.jrs.application.ApplicationService;
 import com.wt.jrs.job.JobEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,7 +163,6 @@ public class UserService {
 
         String updatedFirstName = updatedUser.getFirstName();
         String updatedLastName = updatedUser.getLastName();
-        UserRole updatedUserRole = updatedUser.getRole();
         String updatedUserPhone = updatedUser.getPhoneNumber();
         PreferredContactMethod updatedContactMethod = updatedUser.getContactMethod();
 
